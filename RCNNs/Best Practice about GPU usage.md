@@ -58,6 +58,35 @@
    # This is useful because sometimes many processes occupying the GPUs are not returned by nvidia-smi, you may need this command to decide which processes to kill instead of reboot.
    fuser -v /dev/nvidia*     # or sudo it to see all users
    ```
+   用下面的脚本列出GPU相关的所有PID
+
+   ```Python
+   import subprocess
+
+   from itertools import groupby
+
+
+   cmd = 'sudo fuser -v /dev/nvidia*'
+
+   out_bytes = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+   out_text = out_bytes.decode('utf-8')
+
+
+   def gen_line(text):
+       lines = text.split('\n')[1:-1]
+       device = ''
+       for line in lines:
+           items = line.split()
+           if items[0].startswith('/') and items[0] != device:
+               device = items[0]
+               yield device, items[2]
+           else:
+               yield device, items[1]
+
+
+   for key, items in groupby(gen_line(out_text), key=lambda x: x[0]):
+       print('{:<20}{}'.format(key, ' '.join(item[1] for item in items)))
+   ```
 
 4. 一些杀进程的命令
 
