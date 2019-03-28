@@ -7,7 +7,7 @@
 
 2. separable-conv
 
-   ！[](images/0-img1.png)
+   ![](images/0-img1.png)
 
 简单地来说，就是对输入的每个通道独立使用DM(Depth Multiplier)个卷积核，这样可以得到in_channels\*DM个输出通道，这些个输出按通道连接在一起，然后在使用1\*1的卷积核得到out_channels的输出。
 
